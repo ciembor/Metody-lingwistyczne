@@ -1,0 +1,95 @@
+<!DOCTYPE html> 
+<html lang="pl"> 
+
+  <head> 
+    <meta charset="utf-8"> 
+    <title>Metody lingwistyczne - generacja słów gramatyki</title> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="author" content="Maciej Ciemborowicz"> 
+
+    <link href="js/google-code-prettify/prettify.css" rel="stylesheet"> 
+    <link href="css/bootstrap.css" rel="stylesheet"> 
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet"> 
+    
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]--> 
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="js/generator.js"></script>
+
+  </head> 
+ 
+  <body> 
+  
+    <div class="navbar navbar-fixed-top"> 
+      <div class="navbar-inner"> 
+        <div class="container"> 
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+            <span class="icon-bar"></span> 
+            <span class="icon-bar"></span> 
+            <span class="icon-bar"></span> 
+          </a> 
+          <div class="nav-collapse"> 
+            <ul class="nav"> 
+              <li class=""> 
+                <a href="./index.html">O programie</a> 
+              </li> 
+              <li class=""> 
+                <a href="./gramatyka.html">Gramatyka</a> 
+              </li> 
+              <li class="active"> 
+                <a href="./generator.html">Generator</a> 
+              </li> 
+            </ul> 
+          </div> 
+        </div> 
+      </div> 
+    </div> 
+  
+  
+	<div class="container">
+	  <div class="row-fluid">
+	    <div class="span3">
+	    	<h2>Produkcje</h2>
+	    	<div class="alert alert-success" style="display: none">
+	    		<span><strong>Wywód został zakończony!</strong> <br/>Nie ma już żadnych symboli nieterminalnych.</span>
+			</div>
+            <ul class="nav nav-tabs nav-stacked">
+              <li><a href="#">S → a*(A+B)</a></li>
+              <li><a href="#">A → bA</a></li>
+              <li><a href="#">C → c*(aB*AD)</a></li>
+            </ul>
+	      <a style="width: 100%; padding: 8px 0px; " class="btn btn-large disabled" href="#"><i class="icon-refresh icon-black"></i> Wyczyść</a>
+	    </div> 
+	    <div class="span9">
+	    	<h2>Wywód</h2>
+	      <pre class="prettyprint lang-scala" style="font-size: 120%">rotfl match klop lazy finall 123+((a*rotfl+(~b)+c)+b+(A C B))+a*B</pre>
+	      <div class="well">
+	      	<canvas id="output" width=1000 height=300></canvas>
+	      </div>
+	    </div> 
+	  </div>
+      <hr/> 
+      <footer> 
+        <p class="pull-right">autor: <a href="http://ciemborowicz.pl">Maciej Ciemborowicz</a>, 2012 r.</p> 
+      </footer> 
+	</div>
+	
+    <script type="text/javascript" src="js/google-code-prettify/prettify.js"></script>
+    <script type="text/javascript">
+    	window.prettyPrint && prettyPrint();
+   	</script>
+	  
+  </body>
+  
+</html>

@@ -1,0 +1,281 @@
+
+// convert infix notation to reverse polish notation /////////////////////////////////////////////
+function infixToRPN(string) {
+    
+    var infix = string;
+    var token;
+    var postfix = [];
+    var stack = [];
+    var operators = ["x", "+", "-", "~", "(", ")"];
+
+    while (infix.length > 0) {
+        
+        // like array.shift, but with string...
+        token = infix[0];
+        infix = infix.substr(1);
+
+        if ($.inArray(token, operators) !== -1) {
+            
+            if (")" === token) {
+                while ("(" !== stack[stack.length - 1]) {
+                    postfix.push(stack.pop());
+                }
+                // pop "("
+                stack.pop();
+                
+            } else {
+                stack.push(token);
+            }
+            
+        } else {
+            postfix.push(token);
+        }
+        
+    }
+    
+    while (stack.length > 0) {
+        postfix.push(stack.pop());
+    }
+    
+    return postfix;
+    
+}
+
+// point (tail and head) /////////////////////////////////////////////////////////////////////////
+function Point(x, y) {
+    
+    this.x = x || 0;
+    this.y = y || 0; 
+    
+}
+
+// group of primitives, node in the tree /////////////////////////////////////////////////////////
+function Group() {
+        
+    var childs = Array.prototype.slice.call(arguments);
+    var inverted = false;
+    
+    function draw(ctx) {
+        for(var i = 0; i < childs.length; i++) {
+            childs[i].draw();
+        }
+    }
+    
+    function getTail() { 
+        return inverted ? childs[0].getHead() : childs[length-1].getTail();
+    }
+    
+    function getHead() { 
+        return inverted ? childs[length-1].getTail() : childs[0].getHead();
+    }
+
+    function moveTail(point) {
+        for(var i = 0; i < childs.length; i++) {
+            childs[i].moveTail(point);
+        }
+    }
+
+    function moveHead(point) {
+        for(var i = 0; i < childs.length; i++) {
+            childs[i].moveHead(point);
+        }
+    }
+
+    function invert() { 
+        inverted = inverted ? false : true; 
+    }
+    
+    return {
+        draw: draw,
+        getTail: getTail,
+        getHead: getHead,
+        moveTail: moveTail,
+        moveHead: moveHead,
+        invert: invert
+    };
+
+}
+
+// primitive, leaf node //////////////////////////////////////////////////////////////////////////
+function Primitive(tail_point, symbol) {
+    
+    var tail = tail_point;
+    var head = new Point(tail.x + symbol.x, tail.y + symbol.y);
+
+    var drawable = symbol.drawable;
+    
+    function draw(ctx) {
+        if (drawable) {
+            
+            var diff = {
+                x: (head.x - tail.x) / 8,
+                y: (head.y - tail.y) / 8
+            };
+            
+            ctx.beginPath();  
+            ctx.moveTo(tail.x + diff.x, tail.y + diff.y);  
+            ctx.lineTo(head.x - diff.x , head.y - diff.y);  
+            ctx.stroke();
+            
+        }
+    }
+
+    function getTail() { 
+        return tail; 
+    }
+    
+    function getHead() { 
+        return head; 
+    }
+
+    function moveTail(point) {
+        head.x += point.x - tail.x;
+        head.y += point.y - tail.y;
+        tail = point;
+    }
+
+    function moveHead(point) {
+        tail.x += point.x - head.x;
+        tail.y += point.y - head.y;
+        head = point;
+    }
+
+    function invert() { 
+        var tmp = tail; 
+        tail = head; 
+        head = tmp; 
+    }
+
+    return {
+        draw: draw,
+        getTail: getTail,
+        getHead: getHead,
+        moveTail: moveTail,
+        moveHead: moveHead,
+        invert: invert
+    };
+    
+}
+
+// terminal symbols //////////////////////////////////////////////////////////////////////////////
+var symbols = {
+    
+    // vertical line (|)
+    a: {
+        x: 0,
+        y: -100,
+        drawable: true
+    },
+    
+    // horizontal line (-)
+    b: {
+        x: 100,
+        y: 0,
+        drawable: true
+    },
+    
+    // diagonal line (\)
+    c: {
+        x: 100,
+        y: 100,
+        drawable: true
+    },
+    
+    // space
+    s: {
+        x: 0,
+        y: -100,
+        drawable: false
+    }
+    
+};
+
+var operators = {
+    
+    "~": function(arg) {
+        arg.invert();
+    },
+    
+    "x": function(arg1, arg2) {
+        arg2.setTail(arg1.getTail());
+    },
+    
+    "+": function(arg1, arg2) {
+        arg2.setTail(arg1.getHead());
+    },
+    
+    "-": function(arg1, arg2) {
+        arg2.setHead(arg1.getHead());
+    }
+        
+};
+
+// generated formula /////////////////////////////////////////////////////////////////////////////
+var formula = function() {
+    
+    var infix = "";
+    
+    function draw(ctx) {
+        
+        var postfix = infixToRPN(infix);    // it's an array, not string
+        var operators = ["x", "+", "-", "~"];
+        var stack = [];
+        var operator; 
+        var primitive;
+        
+        var tail = new Point();
+        var head = new Point();
+        
+        while (postfix.length > 0) {
+            
+            // push symbols into stack
+            while ($.inArray(postfix[0], operators) !== -1) {
+                stack.push(postfix.shift());
+            }
+            
+            // get the operator
+            operator = postfix.shift();
+            
+            if ("~" === operator) {
+                if (stack.length !== 1) {
+                    console.log("Error: bad number of arguments for ~ operator (not one).");
+                    return -1;
+                } else {
+                    primitive = new Primitive(head.x, head.y, symbols[stack.pop()]);
+                }
+            } else {
+                
+            }
+            
+        }
+        
+    }
+    
+    return {
+        draw: draw,
+        set: function set(string) { infix = string; },
+        get: function get() { return infix; }
+    };
+    
+};
+
+$(document).ready(function(){
+    
+    // set up canvas context /////////////////////////////////////////////////////////////////////
+    var ctx = $("#output")[0].getContext('2d');
+    ctx.strokeStyle = "#dd1144";
+    ctx.lineWidth = 10;
+    ctx.lineCap = "round";
+
+    var point = new Point(100, 150);
+    var primitive = new Primitive(point, symbols.a);
+    primitive.draw(ctx);
+    primitive = new Primitive(point, symbols.b);
+    primitive.draw(ctx);
+    primitive = new Primitive(point, symbols.c);
+    primitive.draw(ctx);
+    
+    alert(infixToRPN("(4+2)*(3-1)"));
+
+});
+

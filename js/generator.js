@@ -99,7 +99,7 @@ function Group() {
 // primitive, leaf node //////////////////////////////////////////////////////////////////////////
 function Primitive(tail_point, symbol) {
     
-    var tail = tail_point;
+    var tail = new Point(tail_point.x, tail_point.y);
     var head = new Point(tail.x + symbol.x, tail.y + symbol.y);
 
     var drawable = symbol.drawable;
@@ -230,7 +230,15 @@ var formula = function() {
         var tail = new Point();
         var head = new Point();
         
-        while (postfix.length > 0) {
+        // replace symbols with objects
+        for(var i = 0; i < postfix.length; i++) {
+            if(symbols.hasOwnProperty(postfix[i])) {
+                postfix[i] = new Primitive(new Point(), symbols[postfix[i]]);
+            }
+        }
+        
+        // calculate formula (from postfix into tree of primitives and their groups)
+        while (postfix.length > 1) {
             
             // push symbols into stack
             while ($.inArray(postfix[0], operators) !== -1) {
@@ -240,17 +248,28 @@ var formula = function() {
             // get the operator
             operator = postfix.shift();
             
+            // use operator on argument / arguments
             if ("~" === operator) {
-                if (stack.length !== 1) {
+                
+                if (stack.length === 1) {
+                    // put result into begin of postfix
+                    postfix.unshift(operators["~"](stack.pop()));
+                } else {
                     console.log("Error: bad number of arguments for ~ operator (not one).");
                     return -1;
-                } else {
-                    primitive = new Primitive(head.x, head.y, symbols[stack.pop()]);
                 }
-            } else {
                 
+            } else if ($.inArray(operator, operators) !== -1) {
+                
+                if (stack.length === 2) {
+                    // put result into begin of postfix
+                    postfix.unshift(operators[operator](stack.shift(), stack.pop()));
+                } else {
+                    console.log("Error: bad number of arguments for " + operator + " operator (not two).");
+                    return -1;
+                }
+               
             }
-            
         }
         
     }

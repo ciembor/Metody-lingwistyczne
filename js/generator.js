@@ -131,13 +131,17 @@ function Primitive(tail_point, symbol) {
     function moveTail(point) {
         head.x += point.x - tail.x;
         head.y += point.y - tail.y;
-        tail = point;
+        // deep copy, not just reference
+        tail.x = point.x;
+        tail.y = point.y;
     }
 
     function moveHead(point) {
         tail.x += point.x - head.x;
         tail.y += point.y - head.y;
-        head = point;
+        // deep copy, not just reference
+        head.x = point.x;
+        head.y = point.y;
     }
 
     function invert() { 
@@ -197,15 +201,15 @@ var operators = {
     },
     
     "x": function(arg1, arg2) {
-        arg2.setTail(arg1.getTail());
+        arg2.moveTail(arg1.getTail());
     },
     
     "+": function(arg1, arg2) {
-        arg2.setTail(arg1.getHead());
+        arg2.moveTail(arg1.getHead());
     },
     
     "-": function(arg1, arg2) {
-        arg2.setHead(arg1.getHead());
+        arg2.moveHead(arg1.getHead());
     }
         
 };

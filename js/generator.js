@@ -282,7 +282,7 @@ var formula = function() {
     
 };
 
-$(document).ready(function(){
+$(document).ready(function() {
     
     // set up canvas context /////////////////////////////////////////////////////////////////////
     var ctx = $("#output")[0].getContext('2d');

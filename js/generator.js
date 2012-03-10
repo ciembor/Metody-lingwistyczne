@@ -57,16 +57,16 @@ function Group() {
     
     function draw(ctx) {
         for(var i = 0; i < childs.length; i++) {
-            childs[i].draw();
+            childs[i].draw(ctx);
         }
     }
     
     function getTail() { 
-        return inverted ? childs[0].getHead() : childs[length-1].getTail();
+        return inverted ? childs[0].getHead() : childs[childs.length-1].getTail();
     }
     
     function getHead() { 
-        return inverted ? childs[length-1].getTail() : childs[0].getHead();
+        return inverted ? childs[childs.length-1].getTail() : childs[0].getHead();
     }
 
     function moveTail(point) {
@@ -285,20 +285,34 @@ var formula = function() {
 $(document).ready(function() {
     
     // set up canvas context /////////////////////////////////////////////////////////////////////
-    var ctx = $("#output")[0].getContext('2d');
-    ctx.strokeStyle = "#dd1144";
-    ctx.lineWidth = 10;
-    ctx.lineCap = "round";
-
-    var point = new Point(100, 150);
-    var primitive = new Primitive(point, symbols.a);
-    primitive.draw(ctx);
-    primitive = new Primitive(point, symbols.b);
-    primitive.draw(ctx);
-    primitive = new Primitive(point, symbols.c);
-    primitive.draw(ctx);
     
-    alert(infixToRPN("(4+2)*(3-1)"));
+    if ($("#output").length) { 
+
+        var ctx = $("#output")[0].getContext('2d');
+        ctx.strokeStyle = "#dd1144";
+        ctx.lineWidth = 10;
+        ctx.lineCap = "round";
+    
+        var point = new Point(100, 150);
+        var primitive = new Primitive(point, symbols.a);
+        primitive.draw(ctx);
+        primitive = new Primitive(point, symbols.b);
+        primitive.draw(ctx);
+        primitive = new Primitive(point, symbols.c);
+        primitive.draw(ctx);
+        
+        var s1 = new Primitive(new Point(300, 150), symbols.a);
+        var s2 = new Primitive(s1.getHead(), symbols.b);
+        var s3 = new Primitive(s2.getHead(), symbols.b);
+        
+        var group =  new Group(s1, s2, s3);
+        
+        group.draw(ctx);
+        
+        alert(infixToRPN("(4+2)*(3-1)"));
+    } else {
+        console.log("Canvas element not found.");
+    }
 
 });
 

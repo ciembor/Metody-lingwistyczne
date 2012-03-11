@@ -285,7 +285,7 @@ var formula = function() {
 $(document).ready(function() {
     
     // set up canvas context /////////////////////////////////////////////////////////////////////
-    
+
     if ($("#output").length) { 
 
         var ctx = $("#output")[0].getContext('2d');
@@ -310,9 +310,9 @@ $(document).ready(function() {
         group.draw(ctx);
         
         alert(infixToRPN("(4+2)*(3-1)"));
-    } else {
+    } /* else {
         console.log("Canvas element not found.");
-    }
+    } */
 
 });
 

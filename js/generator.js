@@ -62,22 +62,24 @@ function Group() {
     }
     
     function getTail() { 
-        return inverted ? childs[0].getHead() : childs[childs.length-1].getTail();
+        return inverted ? childs[childs.length-1].getHead() : childs[0].getTail();
     }
     
     function getHead() { 
-        return inverted ? childs[childs.length-1].getTail() : childs[0].getHead();
+        return inverted ? childs[0].getTail() : childs[childs.length-1].getHead();
     }
 
     function moveTail(point) {
         for(var i = 0; i < childs.length; i++) {
-            childs[i].moveTail(point);
+            var tail = new Point(point.x + childs[i].getTail().x, point.y + childs[i].getTail().y);
+            childs[i].moveTail(tail);
         }
     }
 
     function moveHead(point) {
         for(var i = 0; i < childs.length; i++) {
-            childs[i].moveHead(point);
+            var head = new Point(point.x + childs[i].getHead().x, point.y + childs[i].getHead().y);
+            childs[i].moveHead(head);
         }
     }
 
@@ -303,7 +305,7 @@ $(document).ready(function() {
         
         var s1 = new Primitive(new Point(300, 150), symbols.a);
         var s2 = new Primitive(s1.getHead(), symbols.b);
-        var s3 = new Primitive(s2.getHead(), symbols.b);
+        var s3 = new Primitive(s2.getHead(), symbols.c);
         
         var group =  new Group(s1, s2, s3);
         

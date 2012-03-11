@@ -1,6 +1,9 @@
 test("Odwrotna notacja polska", function() {
-    deepEqual(infixToRPN("a+b+c+d").join(""), "ab+c+d+", "Wyrażenie bez nawiasów."); 
-    deepEqual(infixToRPN("5+((1+2)x4)-3").join(""), "512+4x3-+", "Wyrażenie z nawiasami."); 
+    deepEqual(infixToRPN("3+2x5").join(""), "325x+", "3+2x5"); 
+    deepEqual(infixToRPN("2x(5+2)").join(""), "252+x", "2x(5+2)"); 
+    deepEqual(infixToRPN("5+((1+2)x4)-3").join(""), "512+4x3-+", "5+((1+2)x4)-3"); 
+    deepEqual(infixToRPN("4x(3-1)+(2x3)").join(""), "431-23x+x", "4x(3-1)+(2x3)"); 
+    deepEqual(infixToRPN("(7+3)x(5-2)x2").join(""), "73+52-2xx", "(7+3)x(5-2)x2"); 
 });
 
 function tailTest(x, y, symbol) {

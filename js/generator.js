@@ -57,6 +57,7 @@ function Group() {
     
     function draw(ctx) {
         for(var i = 0; i < childs.length; i++) {
+            console.log("drawing...");
             childs[i].draw(ctx);
         }
     }
@@ -71,14 +72,16 @@ function Group() {
 
     function moveTail(point) {
         for(var i = 0; i < childs.length; i++) {
-            var tail = new Point(point.x + childs[i].getTail().x, point.y + childs[i].getTail().y);
+            var tail = new Point(point.x + childs[i].getTail().x,
+                                 point.y + childs[i].getTail().y);
             childs[i].moveTail(tail);
         }
     }
 
     function moveHead(point) {
         for(var i = 0; i < childs.length; i++) {
-            var head = new Point(point.x + childs[i].getHead().x, point.y + childs[i].getHead().y);
+            var head = new Point(point.x + childs[i].getHead().x,
+                                 point.y + childs[i].getHead().y);
             childs[i].moveHead(head);
         }
     }
@@ -217,7 +220,7 @@ var operators = {
 };
 
 // generated formula /////////////////////////////////////////////////////////////////////////////
-var formula = function() {
+var Formula = function() {
     
     var infix = "";
     
@@ -274,6 +277,9 @@ var formula = function() {
             }
         }
         
+        console.log(postfix[0]);
+        postfix[0].draw(ctx);
+        
     }
     
     return {
@@ -311,7 +317,11 @@ $(document).ready(function() {
         
         group.draw(ctx);
         
-        alert(infixToRPN("(4+2)*(3-1)"));
+        var formula = new Formula();
+        formula.set("a+a");
+        formula.draw(ctx);
+        
+        alert(infixToRPN("(((a+a)+b)-(a+(ax(~b))))"));
     } /* else {
         console.log("Canvas element not found.");
     } */

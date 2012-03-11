@@ -1,3 +1,8 @@
+test("Odwrotna notacja polska", function() {
+    deepEqual(infixToRPN("a+b+c+d").join(""), "ab+c+d+", "Wyrażenie bez nawiasów."); 
+    deepEqual(infixToRPN("5+((1+2)x4)-3").join(""), "512+4x3-+", "Wyrażenie z nawiasami."); 
+});
+
 function tailTest(x, y, symbol) {
 	var p = new Primitive(new Point(x, y), symbol);
     return [p.getTail().x, p.getTail().y];

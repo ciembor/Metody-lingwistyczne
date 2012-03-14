@@ -44,8 +44,13 @@ function infixToRPN(string) {
 // point (tail and head) /////////////////////////////////////////////////////////////////////////
 function Point(x, y) {
     
-    this.x = x || 0;
-    this.y = y || 0; 
+    if (x === undefined || x === null || y === undefined || y === null) {
+        this.x = 50;
+        this.y = 250;
+    } else {
+        this.x = x;
+        this.y = y; 
+    }
     
 }
 
@@ -328,23 +333,25 @@ $(document).ready(function() {
         ctx.lineWidth = 10;
         ctx.lineCap = "round";
     
-        var point = new Point(100, 150);
-        var primitive = new Primitive(point, symbols.a);
-        primitive.draw(ctx);
-        primitive = new Primitive(point, symbols.b);
-        primitive.draw(ctx);
-        primitive = new Primitive(point, symbols.c);
-        primitive.draw(ctx);
+        // var point = new Point(100, 150);
+        // var primitive = new Primitive(point, symbols.a);
+        // primitive.draw(ctx);
+        // primitive = new Primitive(point, symbols.b);
+        // primitive.draw(ctx);
+        // primitive = new Primitive(point, symbols.c);
+        // primitive.draw(ctx);
+//         
+        // var s1 = new Primitive(new Point(300, 150), symbols.a);
+        // var s2 = new Primitive(s1.getHead(), symbols.b);
+        // var s3 = new Primitive(s2.getHead(), symbols.c);
+//         
+        // var group =  new Group(s1, s2, s3);
+//         
+        // group.draw(ctx);
         
-        var s1 = new Primitive(new Point(300, 150), symbols.a);
-        var s2 = new Primitive(s1.getHead(), symbols.b);
-        var s3 = new Primitive(s2.getHead(), symbols.c);
-        
-        var group =  new Group(s1, s2, s3);
-        
-     //   group.draw(ctx);
-        
-        var formula = new Formula("(a+b)+(a+c)");
+         var formula = new Formula("a+a+b+(~a)+(~b)+c");       // R
+         // var formula = new Formula("a+a+b+(~a)+(~b)x(~a)");    // A
+        // var formula = new Formula("(b+a+~b)+a+b");                     // S
         formula.draw(ctx);
         
    //     alert(infixToRPN("(((a+a)+b)-(a+(ax(~b))))"));

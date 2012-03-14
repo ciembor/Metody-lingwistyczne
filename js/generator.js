@@ -56,8 +56,8 @@ function Group() {
     var inverted = false;
     
     function draw(ctx) {
-        for(var i = 0; i < childs.length; i++) {
-            console.log("drawing...");
+        for(var i = 0, len = childs.length; i < len ; i++) {
+            console.log("drawing group...  [("+getTail().x+","+getTail().y+"), ("+getHead().x+","+getHead().y+")]");
             childs[i].draw(ctx);
         }
     }
@@ -71,19 +71,28 @@ function Group() {
     }
 
     function moveTail(point) {
-        for(var i = 0; i < childs.length; i++) {
-            var tail = new Point(point.x + childs[i].getTail().x,
-                                 point.y + childs[i].getTail().y);
+        var old = new Point(getTail().x, getTail().y);  // deep copy, not reference!
+        for(var i = 0, len = childs.length; i < len ; i++) {
+            var tail = new Point(childs[i].getTail().x + point.x - old.x,
+                                 childs[i].getTail().y + point.y - old.y);
+            
             childs[i].moveTail(tail);
         }
     }
 
     function moveHead(point) {
-        for(var i = 0; i < childs.length; i++) {
-            var head = new Point(point.x + childs[i].getHead().x,
-                                 point.y + childs[i].getHead().y);
+        var old = new Point(getHead().x, getHead().y);  // deep copy, not reference!
+        for(var i = 0, len = childs.length; i < len ; i++) {
+            var head = new Point(childs[i].getHead().x + point.x - old.x,
+                                 childs[i].getHead().y + point.y - old.y);
             childs[i].moveHead(head);
         }
+    }
+
+    function alertEdges() {
+        for(var i = 0, len = childs.length; i < len ; i++) {
+            alert(i + ' tail: ' + childs[i].getTail().x + '/' + childs[i].getTail().y + " | head: " + childs[i].getHead().x + '/' + childs[i].getHead().y)
+        }    
     }
 
     function invert() { 
@@ -94,6 +103,7 @@ function Group() {
         draw: draw,
         getTail: getTail,
         getHead: getHead,
+        alertEdges: alertEdges,
         moveTail: moveTail,
         moveHead: moveHead,
         invert: invert
@@ -111,6 +121,8 @@ function Primitive(tail_point, symbol) {
     
     function draw(ctx) {
         if (drawable) {
+            
+            console.log("drawing primitive... [("+tail.x+","+tail.y+"), ("+head.x+","+head.y+")]");
             
             var diff = {
                 x: (head.x - tail.x) / 8,
@@ -203,88 +215,103 @@ var operators = {
     
     "~": function(arg) {
         arg.invert();
+        return arg;
     },
     
     "x": function(arg1, arg2) {
         arg2.moveTail(arg1.getTail());
+        return new Group(arg1, arg2);
     },
     
     "+": function(arg1, arg2) {
         arg2.moveTail(arg1.getHead());
+        return new Group(arg1, arg2);
     },
     
     "-": function(arg1, arg2) {
         arg2.moveHead(arg1.getHead());
+        return new Group(arg1, arg2);
     }
         
 };
 
 // generated formula /////////////////////////////////////////////////////////////////////////////
-var Formula = function() {
+var Formula = function(string) {
     
-    var infix = "";
+   // var operators = ops;
+    var infix = string;
+    var result = null;
     
     function draw(ctx) {
         
         var postfix = infixToRPN(infix);    // it's an array, not string
-        var operators = ["x", "+", "-", "~"];
+       // var operators = ["x", "+", "-", "~"];
         var stack = [];
         var operator; 
         var primitive;
         
-        var tail = new Point();
-        var head = new Point();
-        
         // replace symbols with objects
-        for(var i = 0; i < postfix.length; i++) {
+        for(var i = 0, len = postfix.length; i < len; i++) {
             if(symbols.hasOwnProperty(postfix[i])) {
                 postfix[i] = new Primitive(new Point(), symbols[postfix[i]]);
             }
         }
         
         // calculate formula (from postfix into tree of primitives and their groups)
-        while (postfix.length > 1) {
-            
-            // push symbols into stack
-            while ($.inArray(postfix[0], operators) !== -1) {
+        while (postfix.length > 1 || (postfix.length && stack.length)) {
+                        
+            console.log(postfix);
+            console.log(stack);
+            // push primitives into stack
+            while ($.inArray(postfix[0], Object.keys(operators)) === -1) {
                 stack.push(postfix.shift());
             }
             
             // get the operator
             operator = postfix.shift();
-            
+            console.log("operator: " + operator);
             // use operator on argument / arguments
             if ("~" === operator) {
                 
-                if (stack.length === 1) {
+                try {
                     // put result into begin of postfix
+                    console.log("(~) postfix: " + postfix);
+                    console.log("(~) stack: " + stack);
                     postfix.unshift(operators["~"](stack.pop()));
-                } else {
-                    console.log("Error: bad number of arguments for ~ operator (not one).");
+
+                } catch(e) {
+                    console.log(e);
                     return -1;
                 }
                 
-            } else if ($.inArray(operator, operators) !== -1) {
-                
-                if (stack.length === 2) {
+            } else if ($.inArray(operator, Object.keys(operators)) !== -1) {
+                console.log("dwuargumentowy operator");
+                try {
                     // put result into begin of postfix
-                    postfix.unshift(operators[operator](stack.shift(), stack.pop()));
-                } else {
-                    console.log("Error: bad number of arguments for " + operator + " operator (not two).");
+                    console.log("("+operator+") postfix: " + postfix);
+                    console.log("("+operator+") stack: " + stack);
+                    var arg2 = stack.pop();
+                    var arg1 = stack.pop();
+                    
+                    postfix.unshift(operators[operator](arg1, arg2));
+                    console.log("po ("+operator+") postfix: " + postfix);
+                    console.log("po ("+operator+") stack: " + stack);
+                } catch(e) {
+                    console.log(e);
                     return -1;
                 }
                
             }
         }
         
-        console.log(postfix[0]);
+       // console.log(postfix[0]);
         postfix[0].draw(ctx);
         
     }
     
     return {
         draw: draw,
-        set: function set(string) { infix = string; },
+        set: function set(string, operators) { infix = string; },
         get: function get() { return infix; }
     };
     
@@ -315,13 +342,12 @@ $(document).ready(function() {
         
         var group =  new Group(s1, s2, s3);
         
-        group.draw(ctx);
+     //   group.draw(ctx);
         
-        var formula = new Formula();
-        formula.set("a+a");
+        var formula = new Formula("(a+b)+(a+c)");
         formula.draw(ctx);
         
-        alert(infixToRPN("(((a+a)+b)-(a+(ax(~b))))"));
+   //     alert(infixToRPN("(((a+a)+b)-(a+(ax(~b))))"));
     } /* else {
         console.log("Canvas element not found.");
     } */

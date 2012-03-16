@@ -6,7 +6,7 @@ function infixToRPN(string) {
     var token;
     var postfix = [];
     var stack = [];
-    var operators = ["x", "+", "-", "~", "(", ")"];
+    var operators = ["×", "+", "-", "~", "(", ")"];
 
     while (infix.length > 0) {
         
@@ -45,8 +45,8 @@ function infixToRPN(string) {
 function Point(x, y) {
     
     if (x === undefined || x === null || y === undefined || y === null) {
-        this.x = 50;
-        this.y = 250;
+        this.x = 10;
+        this.y = 210;
     } else {
         this.x = x;
         this.y = y; 
@@ -127,8 +127,6 @@ function Primitive(tail_point, symbol) {
     function draw(ctx) {
         if (drawable) {
             
-            console.log("drawing primitive... [("+tail.x+","+tail.y+"), ("+head.x+","+head.y+")]");
-            
             var diff = {
                 x: (head.x - tail.x) / 8,
                 y: (head.y - tail.y) / 8
@@ -208,13 +206,59 @@ var symbols = {
     },
     
     // space
-    s: {
-        x: 0,
-        y: -100,
+    z: {
+        x: 135,
+        y: 0,
         drawable: false
     }
     
 };
+
+// grammar productions ////////////////////////////////////////////////////////////////////////////
+var grammar = {
+    
+    // words
+    
+    S: [
+        "AZB",
+        "AZBZBZAZC",
+        "AZBZCZA",
+        "AZC",
+        "BZA",
+        "BZAZCZA",
+        "CZAZBZA",
+        "CZAZBZC"
+    ],
+    
+    // syllabes
+    
+    // letters
+    
+    A: [
+        "(K×(~a))"
+    ],
+    
+    B: [
+        "(K+c)"
+    ],
+    
+    C: [
+        "((b+a+~b)+a+b)"
+    ],
+    
+    // letter helpers
+    
+    K: [
+        "a+a+b+(~a)+(~b)"
+    ],
+    
+    // letter connector
+    
+    Z: [
+        "×z+"
+    ]
+    
+}
 
 var operators = {
     
@@ -223,7 +267,7 @@ var operators = {
         return arg;
     },
     
-    "x": function(arg1, arg2) {
+    "×": function(arg1, arg2) {
         arg2.moveTail(arg1.getTail());
         return new Group(arg1, arg2);
     },
@@ -246,11 +290,35 @@ var Formula = function(string) {
    // var operators = ops;
     var infix = string;
     var result = null;
+    var position = 0;
+    
+    function getNonterminal() {
+        
+        var uppercase = /[A-Z]/;
+        
+        for(var i = position, len = infix.length; i < len; i++) {
+            if (uppercase.test(infix[i])) {
+                position = i;
+                return infix[i];
+            }
+        }
+        
+        // there are only terminals
+        return undefined;
+        
+    }
+    
+    function replaceNonterminal(string) {
+        
+        // remove nonterminal and put string
+        infix = infix.substring(0, position) + string + infix.substring(position + 1);
+        
+    }
     
     function draw(ctx) {
         
         var postfix = infixToRPN(infix);    // it's an array, not string
-       // var operators = ["x", "+", "-", "~"];
+       // var operators = ["×", "+", "-", "~"];
         var stack = [];
         var operator; 
         var primitive;
@@ -264,9 +332,7 @@ var Formula = function(string) {
         
         // calculate formula (from postfix into tree of primitives and their groups)
         while (postfix.length > 1 || (postfix.length && stack.length)) {
-                        
-            console.log(postfix);
-            console.log(stack);
+
             // push primitives into stack
             while ($.inArray(postfix[0], Object.keys(operators)) === -1) {
                 stack.push(postfix.shift());
@@ -274,14 +340,11 @@ var Formula = function(string) {
             
             // get the operator
             operator = postfix.shift();
-            console.log("operator: " + operator);
             // use operator on argument / arguments
             if ("~" === operator) {
                 
                 try {
                     // put result into begin of postfix
-                    console.log("(~) postfix: " + postfix);
-                    console.log("(~) stack: " + stack);
                     postfix.unshift(operators["~"](stack.pop()));
 
                 } catch(e) {
@@ -293,14 +356,10 @@ var Formula = function(string) {
                 console.log("dwuargumentowy operator");
                 try {
                     // put result into begin of postfix
-                    console.log("("+operator+") postfix: " + postfix);
-                    console.log("("+operator+") stack: " + stack);
                     var arg2 = stack.pop();
                     var arg1 = stack.pop();
                     
                     postfix.unshift(operators[operator](arg1, arg2));
-                    console.log("po ("+operator+") postfix: " + postfix);
-                    console.log("po ("+operator+") stack: " + stack);
                 } catch(e) {
                     console.log(e);
                     return -1;
@@ -316,6 +375,8 @@ var Formula = function(string) {
     
     return {
         draw: draw,
+        getNonterminal: getNonterminal,
+        replaceNonterminal: replaceNonterminal,
         set: function set(string, operators) { infix = string; },
         get: function get() { return infix; }
     };
@@ -324,40 +385,75 @@ var Formula = function(string) {
 
 $(document).ready(function() {
     
-    // set up canvas context /////////////////////////////////////////////////////////////////////
-
     if ($("#output").length) { 
 
-        var ctx = $("#output")[0].getContext('2d');
+        // set up canvas context //////////////////////////////////////////////////////////////////
+        var canvas = $("#output")[0];
+        var ctx = canvas.getContext('2d');
         ctx.strokeStyle = "#dd1144";
         ctx.lineWidth = 10;
         ctx.lineCap = "round";
-    
-        // var point = new Point(100, 150);
-        // var primitive = new Primitive(point, symbols.a);
-        // primitive.draw(ctx);
-        // primitive = new Primitive(point, symbols.b);
-        // primitive.draw(ctx);
-        // primitive = new Primitive(point, symbols.c);
-        // primitive.draw(ctx);
-//         
-        // var s1 = new Primitive(new Point(300, 150), symbols.a);
-        // var s2 = new Primitive(s1.getHead(), symbols.b);
-        // var s3 = new Primitive(s2.getHead(), symbols.c);
-//         
-        // var group =  new Group(s1, s2, s3);
-//         
-        // group.draw(ctx);
         
-         var formula = new Formula("a+a+b+(~a)+(~b)+c");       // R
-         // var formula = new Formula("a+a+b+(~a)+(~b)x(~a)");    // A
-        // var formula = new Formula("(b+a+~b)+a+b");                     // S
-        formula.draw(ctx);
+        var nonterminal;
+        var formula;
+
+        function init() {
+            // Store the current transformation matrix
+            ctx.save();
+            
+            // Use the identity matrix while clearing the canvas
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Restore the transform
+            ctx.restore();
+            
+            $("#refresh").addClass("disabled");
+            $("#refresh").removeClass("btn-success");
+            
+            formula = new Formula("S");
+            nonterminal = undefined;
+            
+            $("#formula").text(formula.get());
+            
+            $(".production").hide();
+            $(".S").show();
+            $("#grammar").show();
+            $("#finished").hide();
+        }
+
+        init();
+
+        $(".production").click(function() {
+            
+            var nonterminal = formula.getNonterminal();
+            var consequent = $(this).children().text().substr(4);
+            
+            formula.replaceNonterminal(consequent);
+                        
+            $(".production").hide();
+            $("." + formula.getNonterminal()).show();
+            $("#formula").text(formula.get());
+            
+            if (formula.getNonterminal() === undefined) {
+                formula.draw(ctx);
+                $("#finished").show();
+                $("#grammar").hide();
+                $("#refresh").addClass("btn-success");
+            }
+            
+            $("#refresh").removeClass("disabled");
+            
+        });
         
-   //     alert(infixToRPN("(((a+a)+b)-(a+(ax(~b))))"));
-    } /* else {
+        // #refresh?
+        $("#refresh").click(function() {
+            init();
+        });
+
+    } else { 
         console.log("Canvas element not found.");
-    } */
+    } 
 
 });
 

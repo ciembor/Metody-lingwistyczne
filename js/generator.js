@@ -398,18 +398,16 @@ $(document).ready(function() {
         var formula;
 
         function init() {
-            // Store the current transformation matrix
-            ctx.save();
             
-            // Use the identity matrix while clearing the canvas
+            // clear canvas
+            ctx.save();
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Restore the transform
             ctx.restore();
             
             $("#refresh").addClass("disabled");
             $("#refresh").removeClass("btn-success");
+            $("#refresh > .icon-refresh").removeClass("icon-white");
             
             formula = new Formula("S");
             nonterminal = undefined;
@@ -420,6 +418,7 @@ $(document).ready(function() {
             $(".S").show();
             $("#grammar").show();
             $("#finished").hide();
+            
         }
 
         init();
@@ -440,9 +439,11 @@ $(document).ready(function() {
                 $("#finished").show();
                 $("#grammar").hide();
                 $("#refresh").addClass("btn-success");
+                $("#refresh > .icon-refresh").addClass("icon-white");
             }
             
             $("#refresh").removeClass("disabled");
+            window.prettyPrint && prettyPrint();
             
         });
         

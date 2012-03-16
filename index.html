@@ -52,14 +52,15 @@
           </a> 
           <div class="nav-collapse"> 
             <ul class="nav"> 
-              <li class=""> 
+    <!--          <li class=""> 
                 <a href="./index.html">O programie</a> 
               </li> 
               <li class=""> 
                 <a href="./gramatyka.html">Gramatyka</a> 
               </li> 
+    -->
               <li class="active"> 
-                <a href="./generator.html">Generator</a> 
+                <a href="./index.html">Generator</a> 
               </li> 
             </ul> 
           </div> 
@@ -73,7 +74,7 @@
 	    <div class="span3">
 	    	<h2>Produkcje</h2>
 	    	<div id="finished" class="alert alert-success" style="display: none">
-	    		<span><strong>Wywód został zakończony!</strong> <br/>Nie ma już żadnych symboli nieterminalnych.</span>
+	    		<span><strong>Wywód zakończony!</strong> <br/>Nie ma już żadnych symboli nieterminalnych.</span>
 			</div>
             <ul id="grammar" class="nav nav-tabs nav-stacked">
                 
@@ -95,12 +96,12 @@
               <li class="production Z"><a href="#">Z → ×z+</a></li>
               
             </ul>
-	      <a id="refresh" style="width: 100%; padding: 8px 0px; " class="btn btn-large disabled" href="#"><i class="icon-refresh icon-black"></i> Wyczyść</a>
+	      <a id="refresh" style="width: 100%; padding: 8px 0px; " class="btn btn-large disabled" href="#"><i class="icon-refresh"></i> Wyczyść</a>
 	    </div> 
 	    <div class="span9">
 	    	<h2>Wywód</h2>
 	      <pre id="formula" class="prettyprint" style="font-size: 120%">rotfl match klop lazy finall 123+((a*rotfl+(~b)+c)+b+(A C B))+a*B</pre>
-	      <div class="well">
+	      <div id="output-container" class="well">
 	      	<canvas id="output" width=900 height=215></canvas>
 	      </div>
 	    </div> 
@@ -112,9 +113,6 @@
 	</div>
 	
     <script type="text/javascript" src="js/google-code-prettify/prettify.js"></script>
-    <script type="text/javascript">
-    	window.prettyPrint && prettyPrint();
-   	</script>
 	  
   </body>
   

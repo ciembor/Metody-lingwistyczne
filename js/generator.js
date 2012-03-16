@@ -46,7 +46,7 @@ function Point(x, y) {
     
     if (x === undefined || x === null || y === undefined || y === null) {
         this.x = 10;
-        this.y = 210;
+        this.y = 260;
     } else {
         this.x = x;
         this.y = y; 
@@ -62,7 +62,6 @@ function Group() {
     
     function draw(ctx) {
         for(var i = 0, len = childs.length; i < len ; i++) {
-            console.log("drawing group...  [("+getTail().x+","+getTail().y+"), ("+getHead().x+","+getHead().y+")]");
             childs[i].draw(ctx);
         }
     }
@@ -94,12 +93,6 @@ function Group() {
         }
     }
 
-    function alertEdges() {
-        for(var i = 0, len = childs.length; i < len ; i++) {
-            alert(i + ' tail: ' + childs[i].getTail().x + '/' + childs[i].getTail().y + " | head: " + childs[i].getHead().x + '/' + childs[i].getHead().y)
-        }    
-    }
-
     function invert() { 
         inverted = inverted ? false : true; 
     }
@@ -108,7 +101,6 @@ function Group() {
         draw: draw,
         getTail: getTail,
         getHead: getHead,
-        alertEdges: alertEdges,
         moveTail: moveTail,
         moveHead: moveHead,
         invert: invert
@@ -187,27 +179,27 @@ var symbols = {
     // vertical line (|)
     a: {
         x: 0,
-        y: -100,
+        y: -125,
         drawable: true
     },
     
     // horizontal line (-)
     b: {
-        x: 100,
+        x: 125,
         y: 0,
         drawable: true
     },
     
     // diagonal line (\)
     c: {
-        x: 100,
-        y: 100,
+        x: 125,
+        y: 125,
         drawable: true
     },
     
     // space
     z: {
-        x: 135,
+        x: 170,
         y: 0,
         drawable: false
     }
@@ -229,9 +221,7 @@ var grammar = {
         "CZAZBZA",
         "CZAZBZC"
     ],
-    
-    // syllabes
-    
+
     // letters
     
     A: [
@@ -318,7 +308,6 @@ var Formula = function(string) {
     function draw(ctx) {
         
         var postfix = infixToRPN(infix);    // it's an array, not string
-       // var operators = ["×", "+", "-", "~"];
         var stack = [];
         var operator; 
         var primitive;
@@ -353,7 +342,6 @@ var Formula = function(string) {
                 }
                 
             } else if ($.inArray(operator, Object.keys(operators)) !== -1) {
-                console.log("dwuargumentowy operator");
                 try {
                     // put result into begin of postfix
                     var arg2 = stack.pop();
@@ -368,7 +356,6 @@ var Formula = function(string) {
             }
         }
         
-       // console.log(postfix[0]);
         postfix[0].draw(ctx);
         
     }
@@ -391,7 +378,7 @@ $(document).ready(function() {
         var canvas = $("#output")[0];
         var ctx = canvas.getContext('2d');
         ctx.strokeStyle = "#dd1144";
-        ctx.lineWidth = 10;
+        ctx.lineWidth = 12;
         ctx.lineCap = "round";
         
         var nonterminal;
@@ -414,6 +401,12 @@ $(document).ready(function() {
             
             $("#formula").text(formula.get());
             
+            $(".first-tab").removeClass("first-tab");
+            $(".last-tab").removeClass("last-tab");
+            $(".last-tab").removeClass("only-tab");
+            $("#grammar > .S").first().addClass("first-tab");
+            $("#grammar > .S").last().addClass("last-tab");
+            
             $(".production").hide();
             $(".S").show();
             $("#grammar").show();
@@ -431,6 +424,17 @@ $(document).ready(function() {
             formula.replaceNonterminal(consequent);
                         
             $(".production").hide();
+            
+            $(".first-tab").removeClass("first-tab");
+            $(".last-tab").removeClass("last-tab");
+            $(".last-tab").removeClass("only-tab");
+            
+            var tabs = $("#grammar > ." + formula.getNonterminal());
+            if (tabs.size() > 1) {
+                tabs.first().addClass("first-tab");                tabs.last().addClass("last-tab");            } else {
+                tabs.first().addClass("only-tab");
+            }
+            
             $("." + formula.getNonterminal()).show();
             $("#formula").text(formula.get());
             
@@ -447,7 +451,6 @@ $(document).ready(function() {
             
         });
         
-        // #refresh?
         $("#refresh").click(function() {
             init();
         });

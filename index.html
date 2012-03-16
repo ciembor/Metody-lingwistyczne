@@ -8,12 +8,19 @@
     <meta name="author" content="Maciej Ciemborowicz"> 
 
     <link href="js/google-code-prettify/prettify.css" rel="stylesheet"> 
-    <link href="css/bootstrap.css" rel="stylesheet"> 
+    <link href="css/bootstrap.min.css" rel="stylesheet"> 
+    <link href="css/bootstrap-responsive.css" rel="stylesheet"> 
+
     <style type="text/css">
     
       body {
           padding-top: 60px;
           padding-bottom: 40px;
+      }
+      
+      #refresh {
+          width: 100%; 
+          padding: 8px 0px
       }
       
       .sidebar-nav {
@@ -27,16 +34,35 @@
       .S {
           display: inline;
       }
+
+      .nav-tabs.nav-stacked > .first-tab > a {
+          -webkit-border-radius: 4px 4px 0 0;
+          -moz-border-radius: 4px 4px 0 0;
+          border-radius: 4px 4px 0 0;
+      }
+      .nav-tabs.nav-stacked > .last-tab > a {
+          -webkit-border-radius: 0 0 4px 4px;
+          -moz-border-radius: 0 0 4px 4px;
+          border-radius: 0 0 4px 4px;
+      }
+      .nav-tabs.nav-stacked > .only-tab > a {
+          -webkit-border-radius: 4px 4px 4px 4px;
+          -moz-border-radius: 4px 4px 4px 4px;
+          border-radius: 4px 4px 4px 4px;
+      }
+      
+      #output {
+          width: 100%;
+      }
       
     </style>
-    <link href="css/bootstrap-responsive.css" rel="stylesheet"> 
-    
+
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]--> 
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script type="text/javascript" src="js/generator.js"></script>
+    <script type="text/javascript" src="js/generator.js"></script>
 
   </head> 
  
@@ -52,15 +78,11 @@
           </a> 
           <div class="nav-collapse"> 
             <ul class="nav"> 
-    <!--          <li class=""> 
-                <a href="./index.html">O programie</a> 
-              </li> 
-              <li class=""> 
-                <a href="./gramatyka.html">Gramatyka</a> 
-              </li> 
-    -->
               <li class="active"> 
                 <a href="./index.html">Generator</a> 
+              </li> 
+              <li> 
+                <a href="http://github.com/ciembor/Metody-lingwistyczne">Repozytorium</a> 
               </li> 
             </ul> 
           </div> 
@@ -96,14 +118,14 @@
               <li class="production Z"><a href="#">Z → ×z+</a></li>
               
             </ul>
-	      <a id="refresh" style="width: 100%; padding: 8px 0px; " class="btn btn-large disabled" href="#"><i class="icon-refresh"></i> Wyczyść</a>
+	      <a id="refresh" class="btn btn-large disabled" href="#"><i class="icon-refresh"></i> Wyczyść</a>
 	    </div> 
 	    <div class="span9">
 	    	<h2>Wywód</h2>
-	      <pre id="formula" class="prettyprint" style="font-size: 120%">rotfl match klop lazy finall 123+((a*rotfl+(~b)+c)+b+(A C B))+a*B</pre>
-	      <div id="output-container" class="well">
-	      	<canvas id="output" width=900 height=215></canvas>
-	      </div>
+            <pre id="formula" class="prettyprint" style="font-size: 120%">S</pre>
+    	    <div id="output-container" class="well">
+    	   	   <canvas id="output" width=829 height=266></canvas>
+    	    </div>
 	    </div> 
 	  </div>
       <hr/> 

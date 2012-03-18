@@ -1,141 +1,134 @@
-<!DOCTYPE html> 
-<html lang="pl"> 
-
-  <head> 
-    <meta charset="utf-8"> 
-    <title>Metody lingwistyczne - generacja słów gramatyki</title> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <meta name="author" content="Maciej Ciemborowicz"> 
-
-    <link href="js/google-code-prettify/prettify.css" rel="stylesheet"> 
-    <link href="css/bootstrap.min.css" rel="stylesheet"> 
-    <link href="css/bootstrap-responsive.css" rel="stylesheet"> 
-
-    <style type="text/css">
+<!DOCTYPE html>
+<html lang="pl">
+  
+  <head>
     
-      body {
-          padding-top: 60px;
-          padding-bottom: 40px;
-      }
-      
-      #refresh {
-          width: 100%; 
-          padding: 8px 0px
-      }
-      
-      .sidebar-nav {
-          padding: 9px 0;
-      }
-      
-      .production {
-          display: none;
-      }
-      
-      .S {
-          display: inline;
-      }
-
-      .nav-tabs.nav-stacked > .first-tab > a {
-          -webkit-border-radius: 4px 4px 0 0;
-          -moz-border-radius: 4px 4px 0 0;
-          border-radius: 4px 4px 0 0;
-      }
-      .nav-tabs.nav-stacked > .last-tab > a {
-          -webkit-border-radius: 0 0 4px 4px;
-          -moz-border-radius: 0 0 4px 4px;
-          border-radius: 0 0 4px 4px;
-      }
-      .nav-tabs.nav-stacked > .only-tab > a {
-          -webkit-border-radius: 4px 4px 4px 4px;
-          -moz-border-radius: 4px 4px 4px 4px;
-          border-radius: 4px 4px 4px 4px;
-      }
-      
-      #output {
-          width: 100%;
-      }
-      
-    </style>
-
+    <meta charset="utf-8">
+    <title>Metody lingwistyczne - generacja słów gramatyki</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Maciej Ciemborowicz">
+    
+    <link href="js/google-code-prettify/prettify.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/ml1.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    
     <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]--> 
-
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/generator.js"></script>
-
-  </head> 
- 
-  <body> 
+    
+  </head>
   
-    <div class="navbar navbar-fixed-top"> 
-      <div class="navbar-inner"> 
-        <div class="container"> 
+  <body>
+    
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
             <span class="icon-bar"></span> 
             <span class="icon-bar"></span> 
-            <span class="icon-bar"></span> 
-          </a> 
-          <div class="nav-collapse"> 
-            <ul class="nav"> 
-              <li class="active"> 
-                <a href="./index.html">Generator</a> 
-              </li> 
-              <li> 
-                <a href="http://github.com/ciembor/Metody-lingwistyczne">Repozytorium</a> 
-              </li> 
-            </ul> 
-          </div> 
-        </div> 
-      </div> 
-    </div> 
-  
-  
-	<div class="container">
-	  <div class="row-fluid">
-	    <div class="span3">
-	    	<h2>Produkcje</h2>
-	    	<div id="finished" class="alert alert-success" style="display: none">
-	    		<span><strong>Wywód zakończony!</strong> <br/>Nie ma już żadnych symboli nieterminalnych.</span>
-			</div>
-            <ul id="grammar" class="nav nav-tabs nav-stacked">
-                
-              <li class="production S"><a href="#">S → AZB</a></li>
-              <li class="production S"><a href="#">S → AZBZBZAZC</a></li>
-              <li class="production S"><a href="#">S → AZBZCZA</a></li>
-              <li class="production S"><a href="#">S → AZC</a></li>
-              <li class="production S"><a href="#">S → BZA</a></li>
-              <li class="production S"><a href="#">S → BZAZCZA</a></li>
-              <li class="production S"><a href="#">S → CZAZBZA</a></li>
-              <li class="production S"><a href="#">S → CZAZBZC</a></li>
-
-              <li class="production A"><a href="#">A → (K×(~a))</a></li>
-              <li class="production B"><a href="#">B → (K+c)</a></li>
-              <li class="production C"><a href="#">C → ((b+a+~b)+a+b)</a></li>
-              
-              <li class="production K"><a href="#">K → a+a+b+(~a)+(~b)</a></li>
-              
-              <li class="production Z"><a href="#">Z → ×z+</a></li>
-              
+          </a>
+          
+          <div class="nav-collapse">
+            
+            <ul class="nav">
+              <li class="active">
+                <a href="./index.html">Generator</a>
+              </li>
+              <li class="nav">
+                <a href="http://github.com/ciembor/Metody-lingwistyczne">Repozytorium</a>
+              </li>
             </ul>
-	      <a id="refresh" class="btn btn-large disabled" href="#"><i class="icon-refresh"></i> Wyczyść</a>
-	    </div> 
-	    <div class="span9">
-	    	<h2>Wywód</h2>
-            <pre id="formula" class="prettyprint" style="font-size: 120%">S</pre>
-    	    <div id="output-container" class="well">
-    	   	   <canvas id="output" width=829 height=266></canvas>
-    	    </div>
-	    </div> 
-	  </div>
-      <hr/> 
-      <footer> 
-        <p class="pull-right">autor: <a href="http://ciemborowicz.pl">Maciej Ciemborowicz</a>, 2012 r.</p> 
-      </footer> 
-	</div>
-	
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="row-fluid">
+        <div class="span3">
+          
+          <h2>Produkcje</h2>
+          
+          <div id="finished" class="alert alert-success" style="display: none">
+            <span><strong>Wywód zakończony!</strong>
+              <br/>
+              Nie ma już żadnych symboli nieterminalnych.</span>
+          </div>
+          
+          <ul id="grammar" class="nav nav-tabs nav-stacked">
+            <li class="production S">
+              <a href="#">S → AZB</a>
+            </li>
+            <li class="production S">
+              <a href="#">S → AZBZBZAZC</a>
+            </li>
+            <li class="production S">
+              <a href="#">S → AZBZCZA</a>
+            </li>
+            <li class="production S">
+              <a href="#">S → AZC</a>
+            </li>
+            <li class="production S">
+              <a href="#">S → BZA</a>
+            </li>
+            <li class="production S">
+              <a href="#">S → BZAZCZA</a>
+            </li>
+            <li class="production S">
+              <a href="#">S → CZAZBZA</a>
+            </li>
+            <li class="production S">
+              <a href="#">S → CZAZBZC</a>
+            </li>
+            <li class="production A">
+              <a href="#">A → (K×(~a))</a>
+            </li>
+            <li class="production B">
+              <a href="#">B → (K+c)</a>
+            </li>
+            <li class="production C">
+              <a href="#">C → ((b+a+~b)+a+b)</a>
+            </li>
+            <li class="production K">
+              <a href="#">K → a+a+b+(~a)+(~b)</a>
+            </li>
+            <li class="production Z">
+              <a href="#">Z → ×z+</a>
+            </li>
+          </ul>
+          
+          <a id="refresh" class="btn btn-large disabled" href="#"><i class="icon-refresh"></i> Wyczyść</a>
+        
+        </div>
+        
+        <div class="span9">
+          <h2>Wywód</h2>
+          <pre id="formula" class="prettyprint">S</pre>
+          <div id="output-container" class="well">
+            <canvas id="output" width=829 height=266></canvas>
+          </div>
+        </div>
+        
+      </div>
+      
+      <hr/>
+      
+      <footer>
+        <p class="pull-right">
+          autor: <a href="http://ciemborowicz.pl">Maciej Ciemborowicz</a>, 2012 r.
+        </p>
+      </footer>
+      
+    </div>
+    
     <script type="text/javascript" src="js/google-code-prettify/prettify.js"></script>
-	  
+    <script src="js/bootstrap-collapse.js"></script> 
+    
   </body>
   
 </html>

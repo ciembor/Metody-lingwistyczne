@@ -1,0 +1,48 @@
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+.sidebar-nav {
+    padding: 9px 0;
+}
+
+#refresh {
+    width: 100%; 
+    padding: 8px 0px;
+    margin-bottom: 20px;
+}
+
+#formula {
+    font-size: 16px;
+}
+
+.production {
+    display: none;
+}
+
+.S {
+    display: block;
+}
+
+.nav-tabs.nav-stacked > .first-tab > a {
+    -webkit-border-radius: 4px 4px 0 0;
+    -moz-border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.nav-tabs.nav-stacked > .last-tab > a {
+    -webkit-border-radius: 0 0 4px 4px;
+    -moz-border-radius: 0 0 4px 4px;
+    border-radius: 0 0 4px 4px;
+}
+
+.nav-tabs.nav-stacked > .only-tab > a {
+    -webkit-border-radius: 4px 4px 4px 4px;
+    -moz-border-radius: 4px 4px 4px 4px;
+    border-radius: 4px 4px 4px 4px;
+}
+
+#output {
+    width: 100%;
+}

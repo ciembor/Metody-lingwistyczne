@@ -4,6 +4,10 @@ test("Odwrotna notacja polska", function() {
     deepEqual(infixToRPN("5+((1+2)x4)-3").join(""), "512+4x3-+", "5+((1+2)x4)-3"); 
     deepEqual(infixToRPN("4x(3-1)+(2x3)").join(""), "431-23x+x", "4x(3-1)+(2x3)"); 
     deepEqual(infixToRPN("(7+3)x(5-2)x2").join(""), "73+52-2xx", "(7+3)x(5-2)x2"); 
+ /*   deepEqual(infixToRPN("b+(~a)").join(""), "", "b+(~a)"); 
+    deepEqual(infixToRPN("(~a)+b").join(""), "", "(~a)+b"); */
+    // deepEqual(infixToRPN("a-(a+b)").join(""), "", "a-(a+b)"); 
+    // deepEqual(infixToRPN("((a+a)+b)-(a)").join(""), "", "((a+a)+b)-(a)"); 
 });
 
 function tailTest(x, y, symbol) {
@@ -77,15 +81,20 @@ function groupMoveTailTest(x, y, x1, y1) {
     group.moveTail(new Point(x1, y1));
     var tail = group.getTail();
     var head = group.getHead();
-
+    
+    // group.alertEdges();
+    
     return [[tail.x, tail.y], [head.x, head.y]];
 }
 
 function groupMoveHeadTest(x, y, x1, y1) {
     var group = createGroup(x, y);
+    // group.alertEdges();
     group.moveHead(new Point(x1, y1));
     var tail = group.getTail();
     var head = group.getHead();
+    
+    // group.alertEdges();
     
     return [[tail.x, tail.y], [head.x, head.y]];
 }

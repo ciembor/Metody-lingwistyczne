@@ -1,0 +1,25 @@
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+
+#output {
+  width: 100%;
+}
+
+.production {
+  display: block;
+  margin: 40px;
+}
+
+.modal {
+  display: none;
+}
+
+#output-container {
+  height: 500px;
+  width: 570px;
+  margin: 0px auto;
+  display: block;
+}
